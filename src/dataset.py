@@ -21,11 +21,11 @@ class EpicKitchens100Dataset(Dataset):
             idx = idx.tolist()
 
         row = self.annotations_df.iloc[idx]
-        video_id, start_frame, stop_frame, narration = row[["video_id", "start_frame", "stop_frame", "narration"]]
+        video_id, start_frame, stop_frame, narration, verb_class = row[["video_id", "start_frame", "stop_frame", "narration", "verb_class"]]
         participant_id = video_id.split("_")[0]
         frames_dir = os.path.join(self.root_dir, participant_id, "rgb_frames")
         frames = self.get_frames_for_segment(frames_dir, video_id, start_frame, stop_frame)
-        sample = {"video_id": video_id, "frames": frames, "narration": narration}
+        sample = {"video_id": video_id, "frames": frames, "narration": narration, "verb_class": verb_class}
 
         if self.transform:
             sample = self.transform(sample)
@@ -57,5 +57,3 @@ class EpicKitchens100Dataset(Dataset):
             plt.clf()       # clear the figure for the next frame
 
         plt.close()
-
-print(EpicKitchens100Dataset(r"C:\Users\Jani\EPIC-KITCHENS", r"annotations\train_till_P105.csv").__getitem__(5))
