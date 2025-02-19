@@ -11,17 +11,65 @@ from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
 model = torch.hub.load("facebookresearch/pytorchvideo", "slowfast_r50", pretrained=True)
 model.train()
 
+def scale_pixels(x):
+    return x / 255.0
+
+def permute_tensor(x):
+    return x.permute(1, 0, 2, 3)
+
 mean = [0.45, 0.45, 0.45]
 std = [0.225, 0.225, 0.225]
 crop_size = 256
 train_transform = Compose(
     [
         FixedSizeClipSampler(num_frames=32),
-        Lambda(lambda x: x / 255.0),
+        Lambda(scale_pixels),
         Normalize(mean, std),
         CenterCrop(crop_size),
-        Lambda(lambda x: x.permute(1, 0, 2, 3)),
+        Lambda(permute_tensor),
         PackPathway()
     ]
 )
 train_transform = TransformKey("frames", train_transform)
+
+
+if __name__ == "__main__":
+    import multiprocessing
+    multiprocessing.freeze_support()
+    train_dataset = EpicKitchens100Dataset(r"C:\Users\Jani\EPIC-KITCHENS", r"annotations\train_till_P105.csv", transform=train_transform)
+    train_dataloader = DataLoader(train_dataset, batch_size = 2, shuffle = True, num_workers=0)
+
+    # ------------------------------------------------------
+    # Currently hardcoded and temporary. To be changed later
+    # ------------------------------------------------------
+    num_classes = 88
+    model.blocks[-1].proj = nn.Linear(in_features=model.blocks[-1].proj.in_features, out_features=num_classes)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
+
+    num_epochs = 10
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    for epoch in range(num_epochs):
+        running_loss = 0.0
+        for batch in train_dataloader:
+            print("training on a batch")
+            inputs = batch["frames"]
+            inputs = [inp.to(device) for inp in inputs]
+            
+            labels = batch["verb_class"].to(device)
+            
+            # Forward pass
+            outputs = model(inputs)
+            loss = criterion(outputs, labels)
+            
+            # Backward pass and optimization
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            
+            running_loss += loss.item()
+        
+        print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {running_loss/len(train_dataloader):.4f}")
