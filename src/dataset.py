@@ -1,9 +1,9 @@
 import os
-from PIL import Image
 import matplotlib.pyplot as plt
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
+import torchvision.io as io
 
 # Currently only for the rgb_frames along with narration
 class EpicKitchens100Dataset(Dataset):
@@ -13,7 +13,6 @@ class EpicKitchens100Dataset(Dataset):
         self.transform = transform
     
     def __len__(self):
-        # Without the entire data, this is not technically correct, but can be dealt with
         return len(self.annotations_df)
     
     def __getitem__(self, idx):
@@ -41,15 +40,17 @@ class EpicKitchens100Dataset(Dataset):
         for i in range(start_frame, stop_frame + 1):
             frame_path = (self.get_frame_path(frames_dir, video_id, i))
             if os.path.exists(frame_path):
-                frames.append(Image.open(frame_path).convert('RGB'))  # Might not need to convert to RGB explicitly. Will test later
+                frame = io.read_image(frame_path)
+                frames.append(frame)
             else:
                 print(f"Missing frame: {i}")
-        return frames
+        return torch.stack(frames, dim = 0)
 
-    def show_frames(self, frames, video_id, start_frame, narration):
+    @staticmethod
+    def show_frames(frames, video_id, start_frame, narration):
         plt.figure(figsize=(8, 6))
         for i in range(len(frames)):
-            img = frames[i]
+            img = frames[i].permute(1,2,0)
             plt.imshow(img)
             plt.title(f"Video: {video_id} | Frame {start_frame + i} | {narration}")
             plt.axis("off")

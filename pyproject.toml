@@ -10,6 +10,7 @@ dependencies = [
   "matplotlib>=3.10.0",
   "numpy>=2.2.2",
   "pandas>=2.2.3",
+  "pyqt6>=6.8.1",
   "pytorchvideo>=0.1.5",
   "ruff>=0.9.6",
   "scikit-image>=0.25.1",
