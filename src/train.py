@@ -6,6 +6,7 @@ from .dataset import EpicKitchens100Dataset
 from torchvision.transforms import Compose, Lambda
 from torchvision.transforms import Normalize, CenterCrop
 from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
+from .config import DevConfig
 
 # Load the official SlowFast model from PyTorch Hub.
 model_name = 'x3d_s'
@@ -36,7 +37,7 @@ train_transform = TransformKey("frames", train_transform)
 if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()
-    train_dataset = EpicKitchens100Dataset(r"C:\Users\Jani\EPIC-KITCHENS", r"annotations\train_till_P105.csv", transform=train_transform)
+    train_dataset = EpicKitchens100Dataset(DevConfig.ROOT_DIR, DevConfig.ANNOTATIONS_DIR_RELATIVE, transform=train_transform)
     train_dataloader = DataLoader(train_dataset, batch_size = 2, shuffle = True, num_workers=4)
 
     # ------------------------------------------------------
