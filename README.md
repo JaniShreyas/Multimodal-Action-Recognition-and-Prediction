@@ -3,7 +3,7 @@
 This repository contains training code for the Epic Kitchens 100 dataset. In its current version, the code trains on RGB frames to predict verb classes. Future work will integrate optical flow frames, noun classes, and include fine-tuned weights for the X3D model. <br>
 The src folder contains the actual python scripts for training the models, while the test_notebooks folder is for my personal testing throughout the process using notebooks.
 
-> Note: Please change the data directory link in src/train.py when running to reference your own data. I will be adding a config file for this later but until then please make sure of this.
+> Note: Please change the data directory link in src/config.py to point to your Data directory instead. I have my data saved in a separate location and am thus using the absolute path for the Root directory.
 
 ## Setup Options
 
