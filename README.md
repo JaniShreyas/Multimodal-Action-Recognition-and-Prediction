@@ -21,6 +21,8 @@ uv sync
 
 ### Option 2: Use requirements.txt
 
+> Note: I recommend using uv only since using requirements.txt directly has not been tested and may cause problems. If it turns out that this does not work, please delete the .venv folder and follow the uv setup instructions
+
 Create a python venv using 
 
 ```powershell
