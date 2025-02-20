@@ -1,6 +1,7 @@
 # Epic Kitchens 100 Multimodal Action Recognition & Prediction
 
 This repository contains training code for the Epic Kitchens 100 dataset. In its current version, the code trains on RGB frames to predict verb classes. Future work will integrate optical flow frames, noun classes, and include fine-tuned weights for the X3D model.
+The src folder contains the actual python scripts for training the models, while the test_notebooks folder is for my personal testing throughout the process using notebooks.
 
 ## Setup Options
 
