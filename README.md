@@ -41,6 +41,8 @@ pip install -r requirements.txt
 The project currently contains code for fine-tuning either X3D or SlowFast models using rgb_frames as input and verb_class as output
 The plan is to also flow_frames for input and the list of noun_classes as output
 
+Also, add the train_till_p105.csv annotation file in the annotations/ sub directory inside the main data directory. This is a small subset of the data on which I am currently testing models to see if they are working and will then eventually shift to a bigger subset.
+
 Until then to start training using X3D, run
 
 ```powershell
