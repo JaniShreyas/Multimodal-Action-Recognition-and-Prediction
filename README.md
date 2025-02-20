@@ -52,7 +52,7 @@ Until then to start training using X3D, run
 uv run python -m src.train
 ```
 
-or 
+or if not using uv, make sure the venv is active and run
 
 ```powershell
 python -m src.train
