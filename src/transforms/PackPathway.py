@@ -1,13 +1,15 @@
 import torch
 
+
 class PackPathway(torch.nn.Module):
     """
-    Transform for converting video frames as a list of tensors. 
+    Transform for converting video frames as a list of tensors.
     """
+
     def __init__(self, slowfast_alpha=4):
         super().__init__()
         self.slowfast_alpha = slowfast_alpha
-        
+
     def forward(self, frames: torch.Tensor):
         fast_pathway = frames
         # Perform temporal sampling from the fast pathway.

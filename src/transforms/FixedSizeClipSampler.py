@@ -1,12 +1,14 @@
 import torch
 import torch.nn as nn
 
+
 class FixedSizeClipSampler(nn.Module):
     """
     A custom temporal sampler that:
       1) Pads short clips (N < 32) by repeating the last frame until 32.
       2) Uniformly subsamples long clips (N > 32) down to 32 frames.
     """
+
     def __init__(self, num_frames=32):
         super().__init__()
         self.num_frames = num_frames
