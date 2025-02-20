@@ -8,8 +8,9 @@ from torchvision.transforms import Normalize, CenterCrop
 from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
 
 # Load the official SlowFast model from PyTorch Hub.
-model = torch.hub.load("facebookresearch/pytorchvideo", "slowfast_r50", pretrained=True)
-model.train()
+model_name = 'x3d_s'
+model = torch.hub.load('facebookresearch/pytorchvideo', model_name, pretrained=True)
+model
 
 def scale_pixels(x):
     return x / 255.0
@@ -26,8 +27,7 @@ train_transform = Compose(
         Lambda(scale_pixels),
         Normalize(mean, std),
         CenterCrop(crop_size),
-        Lambda(permute_tensor),
-        PackPathway()
+        Lambda(permute_tensor)
     ]
 )
 train_transform = TransformKey("frames", train_transform)
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()
     train_dataset = EpicKitchens100Dataset(r"C:\Users\Jani\EPIC-KITCHENS", r"annotations\train_till_P105.csv", transform=train_transform)
-    train_dataloader = DataLoader(train_dataset, batch_size = 2, shuffle = True, num_workers=0)
+    train_dataloader = DataLoader(train_dataset, batch_size = 2, shuffle = True, num_workers=4)
 
     # ------------------------------------------------------
     # Currently hardcoded and temporary. To be changed later
@@ -54,15 +54,17 @@ if __name__ == "__main__":
 
     for epoch in range(num_epochs):
         running_loss = 0.0
+        batch_count = 0
         for batch in train_dataloader:
-            print("training on a batch")
-            inputs = batch["frames"]
-            inputs = [inp.to(device) for inp in inputs]
+            if batch_count % 50 == 0:
+                print(f"training on batch: {batch_count}")
+            input = batch["frames"].to(device)
+            batch_count += 1
             
             labels = batch["verb_class"].to(device)
             
             # Forward pass
-            outputs = model(inputs)
+            outputs = model(input)
             loss = criterion(outputs, labels)
             
             # Backward pass and optimization
