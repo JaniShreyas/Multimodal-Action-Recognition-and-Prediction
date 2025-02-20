@@ -5,9 +5,9 @@ The src folder contains the actual python scripts for training the models, while
 
 > Note: Please change the data directory link in src/config.py to point to your Data directory instead. I have my data saved in a separate location and am thus using the absolute path for the Root directory.
 
-## Setup Options
+## Setup Instructions
 
-### Option 1: Install uv
+### Install uv
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
@@ -17,28 +17,6 @@ Then run the following in the repo directory
 
 ```powershell
 uv sync
-```
-
-### Option 2: Use requirements.txt
-
-> Note: I recommend using uv only since using requirements.txt directly has not been tested and may cause problems. If it turns out that this does not work, please delete the .venv folder and follow the uv setup instructions
-
-Create a python venv using 
-
-```powershell
-python -m venv .venv
-```
-
-Then activate using 
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-And then install the requirements using
-
-```powershell
-pip install -r requirements.txt
 ```
 
 ### Current Implementation
@@ -52,12 +30,6 @@ Until then to start training using X3D, run
 
 ```powershell
 uv run python -m src.train
-```
-
-or if not using uv, make sure the venv is active and run
-
-```powershell
-python -m src.train
 ```
 
 > Note: If your device has low RAM, try to reduce num_workers in the dataloader in src/train.py before running
