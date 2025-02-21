@@ -27,7 +27,7 @@ Simply clone the repo wherever you want and then run
 python epic_downloader.py --rgb-frames --participants P01 --train
 ```
 
-This should by default download the data under a directory by the name EPIC-KITCHENS. Simply extract the files within the same folder, and add the annotations csv from this repo under EPIC-KITCHENS/annotations and you should be good to go.
+This should by default download the data under a directory by the name EPIC-KITCHENS in your Users folder. Simply extract the files within the same folder, and add the annotations csv from this repo under EPIC-KITCHENS/annotations and you should be good to go.
 This might take some time to download so you could try Academic Torrents if you are fine with some manual work.
 Please reach out to me if you have any doubts or if some instructions are unclear, or if you just want to discuss ML.
 
