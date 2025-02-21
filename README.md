@@ -3,8 +3,6 @@
 This repository contains training code for the Epic Kitchens 100 dataset. In its current version, the code trains on RGB frames to predict verb classes. Future work will integrate optical flow frames, noun classes, and include fine-tuned weights for the X3D model. <br>
 The src folder contains the actual python scripts for training the models, while the test_notebooks folder is for my personal testing throughout the process using notebooks.
 
-> Note: Please change the data directory link in src/config.py to point to your Data directory instead. I have my data saved in a separate location and am thus using the absolute path for the Root directory.
-
 ## Setup Instructions
 
 ### Install uv
@@ -31,7 +29,9 @@ This should by default download the data under a directory by the name EPIC-KITC
 This might take some time to download so you could try Academic Torrents if you are fine with some manual work.
 Please reach out to me if you have any doubts or if some instructions are unclear, or if you just want to discuss ML.
 
-### Current Implementation
+> Note: Please change the data directory link in src/config.py to point to your Data directory instead. I have my data saved in a separate location and am thus using the absolute path for the Root directory.
+
+## Current Implementation
 
 The project currently contains code for fine-tuning either X3D or SlowFast models using rgb_frames as input and verb_class as output
 The plan is to also flow_frames for input and the list of noun_classes as output
