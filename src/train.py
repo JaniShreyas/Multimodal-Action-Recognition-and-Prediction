@@ -90,3 +90,10 @@ if __name__ == "__main__":
         print(
             f"Epoch [{epoch + 1}/{num_epochs}], Loss: {running_loss / len(train_dataloader):.4f}"
         )
+
+    # After finishing training
+    torch.save(
+        model.state_dict(),
+        f"{DevConfig.MODELS_DIR_LOCAL}/model_temp_with_rgb_frames_and_verb_classes.pth",
+    )
+    print("Model saved to model_final.pth")
