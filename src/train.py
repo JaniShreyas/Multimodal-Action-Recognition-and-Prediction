@@ -96,4 +96,4 @@ if __name__ == "__main__":
         model.state_dict(),
         f"{DevConfig.MODELS_DIR_LOCAL}/model_temp_with_rgb_frames_and_verb_classes.pth",
     )
-    print("Model saved to model_final.pth")
+    print(f"Model saved to {DevConfig.MODELS_DIR_LOCAL}")
