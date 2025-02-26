@@ -7,6 +7,7 @@ requires-python = ">=3.12"
 dependencies = [
   "fvcore>=0.1.5.post20221221",
   "ipykernel>=6.29.5",
+  "kagglehub>=0.3.10",
   "matplotlib>=3.10.0",
   "numpy>=2.2.2",
   "pandas>=2.2.3",
