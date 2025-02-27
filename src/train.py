@@ -12,11 +12,14 @@ import os
 from torch.utils.tensorboard import SummaryWriter
 from .utils.logs import create_log_dir
 
+
 def scale_pixels(x):
     return x / 255.0
 
+
 def permute_tensor(x):
     return x.permute(1, 0, 2, 3)
+
 
 if __name__ == "__main__":
     import multiprocessing
@@ -65,13 +68,13 @@ if __name__ == "__main__":
     val_dataset = UCF50Dataset(
         DevConfig.ROOT_DIR,
         DevConfig.VAL_ANNOTATIONS_FILE_LOCAL,
-        transform = data_transform
+        transform=data_transform,
     )
-    val_dataloader = DataLoader(
-        val_dataset, batch_size=2, shuffle = True, num_workers=4
-    )
+    val_dataloader = DataLoader(val_dataset, batch_size=2, shuffle=True, num_workers=4)
 
-    num_classes = len(pd.read_csv(os.path.join(DevConfig.ANNOTATIONS_DIR_LOCAL, "actions_label.csv")))
+    num_classes = len(
+        pd.read_csv(os.path.join(DevConfig.ANNOTATIONS_DIR_LOCAL, "actions_label.csv"))
+    )
     model.blocks[-1].proj = nn.Linear(
         in_features=model.blocks[-1].proj.in_features, out_features=num_classes
     )
@@ -110,11 +113,9 @@ if __name__ == "__main__":
             writer.add_scalar("Loss/Train_Batch", loss.item(), global_step)
 
         avg_train_loss = running_loss / len(train_dataloader)
-        writer.add_scalar('Loss/Train_Epoch', avg_train_loss, epoch)
+        writer.add_scalar("Loss/Train_Epoch", avg_train_loss, epoch)
 
-        print(
-            f"Epoch [{epoch + 1}/{num_epochs}], Training Loss: {avg_train_loss:.4f}"
-        )
+        print(f"Epoch [{epoch + 1}/{num_epochs}], Training Loss: {avg_train_loss:.4f}")
 
         model.eval()
         valid_loss = 0.0
@@ -127,13 +128,10 @@ if __name__ == "__main__":
 
                 valid_loss += loss.item()
 
-        avg_val_loss = valid_loss/len(val_dataloader)
-        writer.add_scalar('Loss/Valid_Epoch', avg_val_loss, epoch)
+        avg_val_loss = valid_loss / len(val_dataloader)
+        writer.add_scalar("Loss/Valid_Epoch", avg_val_loss, epoch)
 
-        print(
-            f"Validation Loss: {avg_val_loss:.4f}"
-        )
-        
+        print(f"Validation Loss: {avg_val_loss:.4f}")
 
     # After finishing training
     torch.save(
