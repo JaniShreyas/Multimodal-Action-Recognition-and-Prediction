@@ -16,6 +16,7 @@ dependencies = [
   "ruff>=0.9.6",
   "scikit-image>=0.25.1",
   "scikit-learn>=1.6.1",
+  "tensorboard>=2.19.0",
   "torch>=2.6.0",
   "torchvision>=0.21.0",
 ]
