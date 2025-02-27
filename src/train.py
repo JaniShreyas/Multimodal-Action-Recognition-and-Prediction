@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from .datasets.EpicKitchens100Dataset import EpicKitchens100Dataset
+from .datasets import UCF50Dataset
 from torchvision.transforms import Compose, Lambda
 from torchvision.transforms import Normalize, CenterCrop
 from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
@@ -41,9 +41,9 @@ if __name__ == "__main__":
     import multiprocessing
 
     multiprocessing.freeze_support()
-    train_dataset = EpicKitchens100Dataset(
+    train_dataset = UCF50Dataset(
         DevConfig.ROOT_DIR,
-        DevConfig.ANNOTATIONS_DIR_RELATIVE,
+        DevConfig.TRAIN_ANNOTATIONS_FILE_LOCAL,
         transform=train_transform,
     )
     train_dataloader = DataLoader(
@@ -74,7 +74,7 @@ if __name__ == "__main__":
             input = batch["frames"].to(device)
             batch_count += 1
 
-            labels = batch["verb_class"].to(device)
+            labels = batch["action_label"].to(device)
 
             # Forward pass
             outputs = model(input)
@@ -94,6 +94,6 @@ if __name__ == "__main__":
     # After finishing training
     torch.save(
         model.state_dict(),
-        f"{DevConfig.MODELS_DIR_LOCAL}/model_temp_with_rgb_frames_and_verb_classes.pth",
+        f"{DevConfig.MODELS_DIR_LOCAL}/model_temp.pth",
     )
     print(f"Model saved to {DevConfig.MODELS_DIR_LOCAL}")

@@ -24,20 +24,18 @@ class UCF50Dataset(Dataset):
         
         video_name, action, action_label = row["video_name"], row["action"], row["action_label"]
 
-        video = io.read_video(os.path.join(self.root_dir, action, video_name))
-        print(video)
+        video_frames = io.read_video(os.path.join(self.root_dir, action, video_name), pts_unit='sec', output_format="TCHW")[0]
+        
 
-        # sample = {
-        #     "video_id": video_id,
-        #     "frames": frames,
-        #     "narration": narration,
-        #     "verb_class": verb_class,
-        # }
+        sample = {
+            "frames": video_frames,
+            "action_label": action_label
+        }
 
-        # if self.transform:
-        #     sample = self.transform(sample)
+        if self.transform:
+            sample = self.transform(sample)
 
-        # return sample
+        return sample
 
     @staticmethod
     def show_frames(frames, video_id, start_frame, narration):
@@ -51,6 +49,3 @@ class UCF50Dataset(Dataset):
             plt.clf()  # clear the figure for the next frame
 
         plt.close()
-
-from ..config import DevConfig
-UCF50Dataset(DevConfig.ROOT_DIR, DevConfig.ANNOTATIONS_DIR_LOCAL)[0]

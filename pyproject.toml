@@ -15,6 +15,7 @@ dependencies = [
   "pytorchvideo>=0.1.5",
   "ruff>=0.9.6",
   "scikit-image>=0.25.1",
+  "scikit-learn>=1.6.1",
   "torch>=2.6.0",
   "torchvision>=0.21.0",
 ]
