@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from .dataset import EpicKitchens100Dataset
+from .datasets.EpicKitchens100Dataset import EpicKitchens100Dataset
 from torchvision.transforms import Compose, Lambda
 from torchvision.transforms import Normalize, CenterCrop
 from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
