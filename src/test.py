@@ -4,6 +4,7 @@ from .models.X3D import get_x3d_model, get_x3d_transform_compose
 import torch
 from torch.utils.data import DataLoader
 import os
+import time
 
 if __name__ == "__main__":
     import multiprocessing
@@ -29,16 +30,25 @@ if __name__ == "__main__":
     # Evaluate on the test dataset
     total_samples = len(test_dataset)
     correct_predictions = 0
+    inference_times = []
 
     with torch.no_grad():
         for batch in test_dataloader:
             inputs = batch["frames"].to(device)
             labels = batch["action_label"].to(device)
 
+            start_time = time.perf_counter()
+
             outputs = model(inputs)
-            
             predictions = outputs.argmax(dim = 1)
+
+            end_time = time.perf_counter()
+            inference_times.append(end_time - start_time)
+
             correct_predictions += (predictions == labels).sum().item()
     
     accuracy = (correct_predictions/total_samples) * 100
+    avg_inference_time = sum(inference_times) / len(test_dataset)
+
     print("Test Accuracy: {:.2f}%".format(accuracy))
+    print(f"Average Inference Time per sample: {avg_inference_time:.4f} seconds")
