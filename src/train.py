@@ -3,22 +3,12 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from .datasets import UCF50Dataset
-from torchvision.transforms import Compose, Lambda
-from torchvision.transforms import Normalize, CenterCrop
-from .transforms import FixedSizeClipSampler, TransformKey, PackPathway
+from .models.X3D import get_x3d_model, get_x3d_transform_compose
 from .config import DevConfig
 import pandas as pd
 import os
 from torch.utils.tensorboard import SummaryWriter
 from .utils.logs import create_log_dir
-
-
-def scale_pixels(x):
-    return x / 255.0
-
-
-def permute_tensor(x):
-    return x.permute(1, 0, 2, 3)
 
 
 if __name__ == "__main__":
@@ -27,35 +17,14 @@ if __name__ == "__main__":
     multiprocessing.freeze_support()
 
     # Load the official SlowFast model from PyTorch Hub.
-    model_name = "x3d_s"
-    model = torch.hub.load("facebookresearch/pytorchvideo", model_name, pretrained=True)
-
-    # Freeze parameters
-    for param in model.parameters():
-        param.requires_grad = False
-
-    for param in model.blocks[-1].proj.parameters():
-        param.requires_grad = True
+    model = get_x3d_model()
 
     log_dir = create_log_dir(DevConfig.LOGS_DIR_LOCAL, "X3D_only_freeze")
 
     # Create Tensorboard summary writer for logging
     writer = SummaryWriter(log_dir)
 
-    mean = [0.45, 0.45, 0.45]
-    std = [0.225, 0.225, 0.225]
-    crop_size = 256
-    data_transform = Compose(
-        [
-            FixedSizeClipSampler(num_frames=32),
-            Lambda(scale_pixels),
-            Normalize(mean, std),
-            CenterCrop(crop_size),
-            Lambda(permute_tensor),
-        ]
-    )
-    data_transform = TransformKey("frames", data_transform)
-
+    data_transform = get_x3d_transform_compose()
     train_dataset = UCF50Dataset(
         DevConfig.ROOT_DIR,
         DevConfig.TRAIN_ANNOTATIONS_FILE_LOCAL,
