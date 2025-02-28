@@ -5,8 +5,6 @@ from torch.utils.data import DataLoader
 from .datasets import UCF50Dataset
 from .models.X3D import get_x3d_model, get_x3d_transform_compose
 from .config import DevConfig
-import pandas as pd
-import os
 from torch.utils.tensorboard import SummaryWriter
 from .utils.logs import create_log_dir
 
@@ -40,13 +38,6 @@ if __name__ == "__main__":
         transform=data_transform,
     )
     val_dataloader = DataLoader(val_dataset, batch_size=2, shuffle=True, num_workers=4)
-
-    num_classes = len(
-        pd.read_csv(os.path.join(DevConfig.ANNOTATIONS_DIR_LOCAL, "actions_label.csv"))
-    )
-    model.blocks[-1].proj = nn.Linear(
-        in_features=model.blocks[-1].proj.in_features, out_features=num_classes
-    )
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
