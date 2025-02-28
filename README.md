@@ -12,6 +12,11 @@ This repository contains training code for the UCF50 dataset. The code contains 
 * ```outputs/``` contains the training logs, trained models, and predictions <br>
 * ```annotations/``` contains the annotations files for reading the dataset stored elsewhere in the user's pc or locally (can be set in ```src/config.py```) <br>
 
+If at any point in the setup, training, or testing process, you encounter any error or problem, you can contact me. (though there shouldn't be any problems other than the older EK100 notebooks)
+
+> Note: The older notebooks under ```experiment_notebooks/old_ek100_notebooks/``` aren't configured correctly since the dataset has changed to UCF100 for now, so you can look at the outputs but some fiddling, again, will be needed to get them to work again.
+> Although, there is not much to see in them currently.
+
 ## Setup Instructions
 
 ### Install uv
@@ -62,4 +67,36 @@ After this, follow the same steps as above and update the config file with the p
 
 ## Current Implementation
 
-The code currently contains off the shelf 
+The code currently contains off the shelf implementation for fine-tuning X3D using UCF50. The metrics evaluated currently are accuracy and inference time per sample which are ```98.60%``` and ```0.0135 seconds``` respectively (I will be adding different averaged F1 scores in a while as well).
+
+The model present under outputs/models named model_temp.pth was trained on 70% of the data as training, 15% validation, and 15% testing.
+
+The model weights were all frozen except for the last linear classification layer, and it was updated to have 50 classes instead of the 400 of kinetics it was trained with.
+
+The training logs for the model are under ```outputs/logs/X3D_only_freeze/run_20250228-021754/``` and you can visualize them using tensorboard by running 
+```powershell
+uv run tensorboard --logdir="[absolute path of the aforementioned folder in your machine]"
+```
+in a separate terminal window and then going on the ```scalars``` tab for better visuals.
+
+### How to train
+
+For now, you can manually make whatever changes you want regarding the data and model in ```src/train.py``` and then run
+```powershell
+uv run python -m src.train
+```
+in the root directory of the project to start training the model. Each batch's training loss, as well as each epoch's average training and validation losses will be logged so copy the absolute path of the log directory under ```outputs/logs/[Experiment_name]/[time_stamp]/``` (like the one mentioned previously) and run the tensorboard command in a different terminal
+
+
+### How to test
+
+Similar to the training code, you can change the model you want to test in the code (for now; I will be adding command line args to choose the model to test in a while), and then run the following:
+```powershell
+uv run python -m src.test
+```
+
+And this will output the metrics.
+
+### Other features
+
+There is also a script to create annotation files and split them into train, valid, test csv files if you want to change the split size. It is ```src/utils/create_annotations_files.py``` and can be run with a similar command as the ```download_dataset``` one.
