@@ -1,47 +1,65 @@
-# Epic Kitchens 100 Multimodal Action Recognition & Prediction
+# Multimodal Action Recognition and Prediction
 
-This repository contains training code for the Epic Kitchens 100 dataset. In its current version, the code trains on RGB frames to predict verb classes. Future work will integrate optical flow frames, noun classes, and include fine-tuned weights for the X3D model. <br>
-The src folder contains the actual python scripts for training the models, while the test_notebooks folder is for my personal testing throughout the process using notebooks.
+This project aims to define a pipeline for training and fine-tuning a wide variety of Action recognition, prediction, and anticipation models on just as large a variety of datasets, including UCF50, and EpicKitchens100 (EK100).
+Currently, the implementation includes a pipeline for training X3D on UCF50, as well as an implementation of EK100. The training and testing script are currently hard-set to UCF50 but can use EK100 as well by fiddling a little with the code.
+
+The present model was trained on 70% data as training, 15% as validation, and 15% as testing, and gives ```98.60%``` accuracy with an average inference time of ```0.0135 seconds``` per sample with each batch containing 2 samples (batch_size = 2).<br>
+The respective annotation csv files are present in the repo.
+
+This repository contains training code for the UCF50 dataset. The code contains 4 main directories at the top level: src, experiment_notebooks, outputs, and annotations. <br>
+* The ```src/``` directory contains the actual code for training and testing models (currently for X3D but will implement SlowFast and a few others in the future). <br>
+* ```experiment_notebooks/``` contains rough initial prototyping/testing of the features that were then polished and modularized inside ```src/``` <br>
+* ```outputs/``` contains the training logs, trained models, and predictions <br>
+* ```annotations/``` contains the annotations files for reading the dataset stored elsewhere in the user's pc or locally (can be set in ```src/config.py```) <br>
 
 ## Setup Instructions
 
 ### Install uv
+This project uses uv for package management: https://github.com/astral-sh/uv
+
+Follow the instructions in the above repo link or run the following command in powershell to install uv
 
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Then run the following in the repo directory
+Then run the following in the repo directory to setup the packages
 
 ```powershell
 uv sync
 ```
 
 ### Data Setup
-You can download the subset that I have used for initial testing (and matching with the small csv that I have included in the repo) from https://github.com/epic-kitchens/epic-kitchens-download-scripts
-Simply clone the repo wherever you want and then run
+
+#### Option 1: Included download script
+
+The repo contains a download script called ```download_dataset.py``` under ```src/utils/```. The script will download the dataset in ```<user>/.cache/kagglehub/datasets/``` (where ```<user>``` is your ```C:\Users\user``` directory in windows). <br>
+You can run the script using the following command in the root directory of the project:
 
 ```powershell
-python epic_downloader.py --rgb-frames --participants P01 --train
+uv run python -m src.utils.download_dataset
 ```
 
-This should by default download the data under a directory by the name EPIC-KITCHENS in your Users folder. Simply extract the files within the same folder, and add the annotations csv from this repo under EPIC-KITCHENS/annotations and you should be good to go.
-This might take some time to download so you could try Academic Torrents if you are fine with some manual work.
-Please reach out to me if you have any doubts or if some instructions are unclear, or if you just want to discuss ML.
+This will download the dataset and output the path. You then have to copy the path, example: ```r"C:\Users\Jani\.cache\kagglehub\datasets\vineethakkinapalli\ucf50-action-recognition-dataset\versions\1\UCF50"```, and update the ROOT_DIR field in src.config's DevConfig class
+Example:
+```python
+class DevConfig:
+    ROOT_DIR = r"C:\Users\Jani\.cache\kagglehub\datasets\vineethakkinapalli\ucf50-action-recognition-dataset\versions\1\UCF50"
+    ANNOTATIONS_DIR_LOCAL = "annotations"
+    FULL_ANNOTATIONS_FILE_LOCAL = "annotations/annotations.csv"
+    TRAIN_ANNOTATIONS_FILE_LOCAL = "annotations/train_annotations.csv"
+    VAL_ANNOTATIONS_FILE_LOCAL = "annotations/val_annotations.csv"
+    TEST_ANNOTATIONS_FILE_LOCAL = "annotations/test_annotations.csv"
+    MODELS_DIR_LOCAL = "outputs/models"
+    LOGS_DIR_LOCAL = "outputs/logs"
+    RANDOM_STATE = 42
+```
 
-> Note: Please change the data directory link in src/config.py to point to your Data directory instead. I have my data saved in a separate location and am thus using the absolute path for the Root directory.
+#### Option 2: Manual download
+If you want to, you can download the dataset from here directly: https://www.kaggle.com/datasets/vineethakkinapalli/ucf50-action-recognition-dataset by clicking the ```download``` button and then clicking download dataset as zip. I have not used this personally but it should work (If it doesn't please use the download script)
+
+After this, follow the same steps as above and update the config file with the path of the dataset. Local paths should work if your dataset is in the root directory under a folder like ```data/``` or something, but, again, I have not tested it, so try using the absolute path in that case as well.
 
 ## Current Implementation
 
-The project currently contains code for fine-tuning either X3D or SlowFast models using rgb_frames as input and verb_class as output
-The plan is to also flow_frames for input and the list of noun_classes as output
-
-Also, add the train_till_p105.csv annotation file in the annotations/ sub directory inside the main data directory. This is a small subset of the data on which I am currently testing models to see if they are working and will then eventually shift to a bigger subset.
-
-Until then to start training using X3D, run
-
-```powershell
-uv run python -m src.train
-```
-
-> Note: If your device has low RAM, try to reduce num_workers in the dataloader in src/train.py before running
+The code currently contains off the shelf 
