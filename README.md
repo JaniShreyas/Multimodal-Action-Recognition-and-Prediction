@@ -69,7 +69,7 @@ After this, follow the same steps as above and update the config file with the p
 
 The code currently contains off the shelf implementation for fine-tuning X3D using UCF50. The metrics evaluated currently are accuracy and inference time per sample which are ```98.60%``` and ```0.0135 seconds``` respectively (I will be adding different averaged F1 scores in a while as well).
 
-The model present under outputs/models named model_temp.pth was trained on 70% of the data as training, 15% validation, and 15% testing.
+The model present under outputs/models named model_initial.pth was trained on 70% of the data as training, 15% validation, and 15% testing.
 
 The model weights were all frozen except for the last linear classification layer, and it was updated to have 50 classes instead of the 400 of kinetics it was trained with.
 
