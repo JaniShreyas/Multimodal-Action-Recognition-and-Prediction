@@ -22,7 +22,7 @@ if __name__ == "__main__":
     )
 
     model = get_x3d_model()
-    model.load_state_dict(torch.load(os.path.join(DevConfig.MODELS_DIR_LOCAL, "model_temp.pth"), map_location=device))
+    model.load_state_dict(torch.load(os.path.join(DevConfig.MODELS_DIR_LOCAL, "model_initial.pth"), map_location=device))
     model.to(device)
 
     model.eval()
