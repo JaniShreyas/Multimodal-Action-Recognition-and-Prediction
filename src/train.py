@@ -6,7 +6,7 @@ from .datasets import UCF50Dataset
 from .models.X3D import get_x3d_model, get_x3d_transform_compose
 from .config import DevConfig
 from torch.utils.tensorboard import SummaryWriter
-from .utils.logs import create_log_dir
+from .utils.logs import create_model_and_log_dir
 
 
 if __name__ == "__main__":
@@ -17,7 +17,7 @@ if __name__ == "__main__":
     # Load the official SlowFast model from PyTorch Hub.
     model = get_x3d_model()
 
-    log_dir = create_log_dir(DevConfig.LOGS_DIR_LOCAL, "X3D_only_freeze")
+    model_name, log_dir = create_model_and_log_dir(DevConfig.MODELS_DIR_LOCAL, DevConfig.LOGS_DIR_LOCAL, "X3D_only_freeze")
 
     # Create Tensorboard summary writer for logging
     writer = SummaryWriter(log_dir)
@@ -96,6 +96,6 @@ if __name__ == "__main__":
     # After finishing training
     torch.save(
         model.state_dict(),
-        f"{DevConfig.MODELS_DIR_LOCAL}/model_temp.pth",
+        f"{DevConfig.MODELS_DIR_LOCAL}/{model_name}",
     )
     print(f"Model saved to {DevConfig.MODELS_DIR_LOCAL}")
