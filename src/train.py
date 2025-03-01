@@ -7,11 +7,9 @@ from .models.X3D import get_x3d_model, get_x3d_transform_compose
 from .config import DevConfig
 from torch.utils.tensorboard import SummaryWriter
 from .utils.logs import create_model_and_log_dir
+import multiprocessing
 
-
-if __name__ == "__main__":
-    import multiprocessing
-
+def main():
     multiprocessing.freeze_support()
 
     # Load the official SlowFast model from PyTorch Hub.
@@ -99,3 +97,7 @@ if __name__ == "__main__":
         f"{DevConfig.MODELS_DIR_LOCAL}/{model_name}",
     )
     print(f"Model saved to {DevConfig.MODELS_DIR_LOCAL}")
+
+
+if __name__ == "__main__":
+    main()
